@@ -1,0 +1,1752 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>نظام الريان - ورديات وكاشير</title>
+  <style>
+    :root{
+      --bg:#f4f6fb;
+      --card:#fff;
+      --ink:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --main:#5b2c83;
+      --main2:#7c3aed;
+      --dark:#121827;
+      --good:#16a34a;
+      --bad:#dc2626;
+      --warn:#f59e0b;
+      --blue:#2563eb;
+      --soft:#f1f5f9;
+      --shadow:0 14px 35px rgba(15,23,42,.08);
+      --r:22px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font-family:Tahoma, Arial, sans-serif;
+    }
+    button,input,select,textarea{font-family:inherit}
+    button{border:0; cursor:pointer}
+    .hidden{display:none !important}
+
+    .btn{
+      border-radius:15px;
+      padding:12px 15px;
+      font-weight:900;
+      min-height:42px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      transition:.16s;
+      text-decoration:none;
+      white-space:nowrap;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn-main{background:var(--main);color:#fff}
+    .btn-main:hover{background:#42165f}
+    .btn-soft{background:var(--soft);color:var(--ink)}
+    .btn-good{background:var(--good);color:#fff}
+    .btn-bad{background:var(--bad);color:#fff}
+    .btn-warn{background:var(--warn);color:#fff}
+    .btn-blue{background:var(--blue);color:#fff}
+    .btn-outline{background:#fff;border:1px solid var(--line);color:var(--ink)}
+    .btn-sm{padding:8px 10px; min-height:32px; border-radius:12px; font-size:13px}
+    .btn-full{width:100%}
+
+    input,select,textarea{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:15px;
+      padding:12px 13px;
+      outline:none;
+      font-size:14px;
+      background:#fff;
+      color:var(--ink);
+    }
+    input:focus,select:focus,textarea:focus{
+      border-color:var(--main2);
+      box-shadow:0 0 0 3px rgba(124,58,237,.12);
+    }
+    label{display:block;margin:10px 0 6px;font-weight:900;font-size:13px}
+
+    .login{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:18px;
+      background:
+        radial-gradient(circle at top right,rgba(91,44,131,.24),transparent 33%),
+        radial-gradient(circle at bottom left,rgba(245,158,11,.18),transparent 33%),
+        var(--bg);
+    }
+    .login-card{
+      width:min(760px,100%);
+      background:#fff;
+      border-radius:30px;
+      box-shadow:var(--shadow);
+      padding:26px;
+    }
+    .brand{text-align:center;margin-bottom:20px}
+    .brand h1{margin:0;color:var(--main);font-size:34px}
+    .brand p{margin:8px 0 0;color:var(--muted);line-height:1.7}
+    .user-choices{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin:20px 0;
+    }
+    .user-choice{
+      padding:20px;
+      border-radius:22px;
+      background:#f8fafc;
+      border:2px solid transparent;
+      text-align:center;
+      font-weight:900;
+      min-height:110px;
+    }
+    .user-choice span{display:block;color:var(--muted);font-size:13px;margin-top:8px}
+    .user-choice.active{
+      border-color:var(--main);
+      background:#f3e8ff;
+      color:var(--main);
+    }
+    .login-pass{
+      width:min(420px,100%);
+      margin:auto;
+    }
+    .hint{
+      background:#f8fafc;
+      color:#475569;
+      border-radius:18px;
+      padding:12px 14px;
+      line-height:1.8;
+      font-size:13px;
+      margin-top:12px;
+    }
+
+    .app{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:260px 1fr;
+    }
+    .sidebar{
+      background:var(--dark);
+      color:#fff;
+      padding:18px;
+      height:100vh;
+      overflow:auto;
+      position:sticky;
+      top:0;
+    }
+    .side-brand{
+      border-bottom:1px solid rgba(255,255,255,.12);
+      padding:6px 6px 16px;
+      margin-bottom:14px;
+    }
+    .side-brand h2{margin:0;font-size:25px}
+    .side-brand p{margin:8px 0 0;color:#cbd5e1;font-size:13px;line-height:1.6}
+    .nav{display:grid;gap:8px}
+    .nav button{
+      background:transparent;
+      color:#e5e7eb;
+      border-radius:15px;
+      padding:12px 13px;
+      font-weight:900;
+      text-align:right;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .nav button.active,.nav button:hover{background:rgba(255,255,255,.12);color:#fff}
+    .user-panel{
+      margin-top:16px;
+      padding:13px;
+      border-radius:18px;
+      background:rgba(255,255,255,.08);
+      line-height:1.9;
+      color:#e5e7eb;
+      font-size:13px;
+    }
+
+    .content{padding:18px;overflow:auto}
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      background:#fff;
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      padding:16px 18px;
+      margin-bottom:16px;
+    }
+    .topbar h1{margin:0;font-size:25px}
+    .topbar p{margin:5px 0 0;color:var(--muted);font-size:13px}
+
+    .card{
+      background:#fff;
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      padding:17px;
+      margin-bottom:16px;
+    }
+    .card-title{
+      margin:0 0 14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      font-size:18px;
+    }
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .stat{
+      background:#fff;
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    .stat span{color:var(--muted);font-size:13px;font-weight:900}
+    .stat strong{display:block;color:var(--main);font-size:27px;margin-top:9px}
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:999px;
+      background:#f1f5f9;
+      color:#64748b;
+      padding:5px 9px;
+      font-weight:900;
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .badge.good{background:#dcfce7;color:#166534}
+    .badge.bad{background:#fee2e2;color:#991b1b}
+    .badge.warn{background:#fef3c7;color:#92400e}
+
+    .layout-pos{
+      display:grid;
+      grid-template-columns:1fr 430px;
+      gap:16px;
+    }
+    .tabs{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}
+    .tab{
+      padding:10px 14px;
+      border-radius:999px;
+      background:var(--soft);
+      color:#334155;
+      font-weight:900;
+    }
+    .tab.active{background:var(--main);color:#fff}
+
+    .menu-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:11px;
+    }
+    .menu-item{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      min-height:110px;
+      text-align:right;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      transition:.16s;
+    }
+    .menu-item:hover{transform:translateY(-2px);border-color:#c4b5fd;box-shadow:0 12px 22px rgba(15,23,42,.08)}
+    .menu-item .name{font-weight:900;font-size:17px;line-height:1.45}
+    .meta{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px}
+    .price{color:var(--main);font-weight:900;font-size:19px;white-space:nowrap}
+
+    .receipt-box{
+      background:#fff;
+      border-radius:var(--r);
+      box-shadow:var(--shadow);
+      padding:17px;
+      position:sticky;
+      top:18px;
+    }
+    .printable{
+      background:#fbfbfc;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:15px;
+    }
+    .receipt-head{
+      text-align:center;
+      padding-bottom:12px;
+      border-bottom:1px dashed #cbd5e1;
+      margin-bottom:12px;
+    }
+    .receipt-head h2{margin:0;color:var(--main);font-size:25px}
+    .receipt-head p{margin:5px 0 0;color:var(--muted);font-size:13px;line-height:1.6}
+    .receipt-info{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:6px;
+      background:#f8fafc;
+      border-radius:14px;
+      padding:10px;
+      font-size:13px;
+      color:#334155;
+      margin-bottom:11px;
+    }
+    .cart-empty{
+      padding:25px 10px;
+      text-align:center;
+      border:1px dashed #cbd5e1;
+      border-radius:15px;
+      color:#94a3b8;
+      font-weight:900;
+    }
+    .cart-line{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:15px;
+      padding:10px;
+      margin-bottom:8px;
+    }
+    .line-top{display:flex;justify-content:space-between;gap:8px;font-weight:900}
+    .line-sub{margin-top:5px;color:var(--muted);font-size:13px}
+    .qty-row{display:flex;justify-content:space-between;align-items:center;margin-top:9px}
+    .qty-controls{display:flex;gap:8px;align-items:center}
+    .round{
+      width:32px;height:32px;border-radius:50%;
+      background:#f1f5f9;
+      font-weight:900;
+      font-size:17px;
+    }
+    .round.del{background:#fee2e2;color:var(--bad)}
+    .summary{border-top:1px dashed #cbd5e1;margin-top:12px;padding-top:10px}
+    .sum-row{display:flex;justify-content:space-between;padding:5px 0;font-size:14px}
+    .sum-row.total{
+      border-top:1px solid var(--line);
+      margin-top:5px;
+      padding-top:10px;
+      color:var(--main);
+      font-size:22px;
+      font-weight:900;
+    }
+
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px;background:#fff}
+    table{width:100%;border-collapse:collapse;min-width:780px}
+    th,td{
+      padding:11px 12px;
+      border-bottom:1px solid var(--line);
+      text-align:right;
+      vertical-align:middle;
+      font-size:14px;
+    }
+    th{background:#f8fafc;color:#475569;font-size:13px;white-space:nowrap}
+    tr:last-child td{border-bottom:0}
+    .actions{display:flex;gap:6px;flex-wrap:wrap}
+
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(15,23,42,.52);
+      z-index:60;
+      display:grid;
+      place-items:center;
+      padding:16px;
+    }
+    .modal-card{
+      width:min(860px,100%);
+      max-height:90vh;
+      overflow:auto;
+      background:#fff;
+      border-radius:24px;
+      padding:20px;
+      box-shadow:var(--shadow);
+    }
+    .modal-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .modal-head h2{margin:0;color:var(--main)}
+
+    .toast{
+      position:fixed;
+      left:18px;
+      bottom:18px;
+      background:#111827;
+      color:#fff;
+      border-radius:16px;
+      padding:13px 16px;
+      box-shadow:var(--shadow);
+      z-index:80;
+      opacity:0;
+      transform:translateY(12px);
+      transition:.2s;
+      pointer-events:none;
+      max-width:380px;
+      line-height:1.6;
+    }
+    .toast.show{opacity:1;transform:translateY(0)}
+
+    .mini-list{margin:8px 0 0;padding:0 18px 0 0;line-height:1.9;color:#334155}
+    .form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .form-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+
+    @media(max-width:1200px){
+      .layout-pos{grid-template-columns:1fr}
+      .receipt-box{position:static}
+      .menu-grid{grid-template-columns:repeat(3,1fr)}
+      .grid-4{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:850px){
+      .app{grid-template-columns:1fr}
+      .sidebar{height:auto;position:static}
+      .nav{grid-template-columns:repeat(2,1fr)}
+      .content{padding:12px}
+      .topbar{flex-direction:column;align-items:flex-start}
+      .user-choices,.grid-4,.grid-3,.grid-2,.form-grid,.form-grid-2{grid-template-columns:1fr}
+      .menu-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media print{
+      body{background:#fff}
+      body *{visibility:hidden !important}
+      .printable,.printable *{visibility:visible !important}
+      .printable{
+        position:absolute;
+        inset:0;
+        width:100%;
+        border:0;
+        border-radius:0;
+        background:#fff;
+        padding:0;
+      }
+      .no-print,.no-print *{display:none !important}
+      .qty-row{display:none !important}
+      .receipt-head h2{color:#000}
+    }
+  </style>
+</head>
+<body>
+  <section id="loginScreen" class="login">
+    <div class="login-card">
+      <div class="brand">
+        <h1>مطعم الريان</h1>
+        <p>اختر المستخدم ثم اكتب كلمة المرور لفتح النظام</p>
+      </div>
+
+      <div id="loginUserChoices" class="user-choices"></div>
+
+      <div class="login-pass">
+        <label>كلمة المرور</label>
+        <input id="loginPassword" type="password" placeholder="اكتب كلمة المرور" onkeydown="if(event.key==='Enter') login()" />
+        <button class="btn btn-main btn-full" onclick="login()">دخول</button>
+
+        <div class="hint">
+          كلمات المرور الافتراضية:<br>
+          <b>Admin:</b> 1234 —
+          <b>كاشير 1:</b> 1111 —
+          <b>كاشير 2:</b> 2222<br>
+          يمكن للأدمن تغيير كلمات المرور من صفحة المستخدمين.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main id="app" class="app hidden">
+    <aside class="sidebar no-print">
+      <div class="side-brand">
+        <h2>مطعم الريان</h2>
+        <p>كاشير، ورديات، مصروفات، تقارير، وأسعار</p>
+      </div>
+
+      <nav id="nav" class="nav"></nav>
+
+      <div class="user-panel">
+        <div>المستخدم: <b id="currentUserName"></b></div>
+        <div>الصلاحية: <b id="currentUserRole"></b></div>
+        <div id="currentShiftLine">الوردية: <b>-</b></div>
+        <button class="btn btn-bad btn-full" onclick="logout()">تسجيل خروج</button>
+      </div>
+    </aside>
+
+    <section class="content">
+      <header class="topbar no-print">
+        <div>
+          <h1 id="pageTitle"></h1>
+          <p id="pageSubtitle"></p>
+        </div>
+        <div class="row">
+          <button class="btn btn-outline" onclick="backupData()">نسخة احتياطية</button>
+          <label class="btn btn-outline" style="margin:0;">
+            استرجاع نسخة
+            <input type="file" accept=".json" style="display:none" onchange="restoreData(event)" />
+          </label>
+        </div>
+      </header>
+
+      <section id="page-dashboard" class="page"></section>
+      <section id="page-pos" class="page hidden"></section>
+      <section id="page-shift" class="page hidden"></section>
+      <section id="page-expenses" class="page hidden"></section>
+      <section id="page-prices" class="page hidden"></section>
+      <section id="page-products" class="page hidden"></section>
+      <section id="page-reports" class="page hidden"></section>
+      <section id="page-users" class="page hidden"></section>
+      <section id="page-settings" class="page hidden"></section>
+    </section>
+  </main>
+
+  <div id="modal" class="modal hidden"></div>
+  <div id="toast" class="toast"></div>
+
+<script>
+const STORAGE_KEY = "alRayyanCleanShiftPOS_v3";
+
+const defaultData = {
+  settings:{
+    restaurantName:"مطعم الريان",
+    address:"صان الحجر، ميدان المحطة",
+    phone:"01002997057",
+    serviceDefault:0,
+    deliveryDefault:0
+  },
+  users:[
+    {id:1, username:"admin", name:"Admin", role:"admin", password:"1234", active:true},
+    {id:2, username:"cashier1", name:"كاشير 1", role:"cashier", password:"1111", active:true},
+    {id:3, username:"cashier2", name:"كاشير 2", role:"cashier", password:"2222", active:true}
+  ],
+  products:[
+    {id:101,name:"كشري 20",category:"كشري",price:20,active:true},
+    {id:102,name:"كشري 25",category:"كشري",price:25,active:true},
+    {id:103,name:"كشري 30",category:"كشري",price:30,active:true},
+    {id:104,name:"كشري 35",category:"كشري",price:35,active:true},
+    {id:105,name:"كشري 40",category:"كشري",price:40,active:true},
+    {id:106,name:"كشري 45",category:"كشري",price:45,active:true},
+    {id:107,name:"كشري 50",category:"كشري",price:50,active:true},
+
+    {id:201,name:"طاجن لحمة",category:"طواجن",price:35,active:true},
+    {id:202,name:"طاجن كبدة",category:"طواجن",price:35,active:true},
+    {id:203,name:"طاجن فراخ",category:"طواجن",price:40,active:true},
+    {id:204,name:"طاجن لحمة م",category:"طواجن",price:50,active:true},
+    {id:205,name:"طاجن كبدة م",category:"طواجن",price:50,active:true},
+    {id:206,name:"طاجن فراخ م",category:"طواجن",price:60,active:true},
+
+    {id:301,name:"كريب بطاطس",category:"كريب",price:30,active:true},
+    {id:302,name:"كريب بانيه",category:"كريب",price:50,active:true},
+    {id:303,name:"كريب مكس جبن",category:"كريب",price:55,active:true},
+    {id:304,name:"كريب كبدة",category:"كريب",price:55,active:true},
+    {id:305,name:"كريب كفتة",category:"كريب",price:70,active:true},
+    {id:306,name:"كريب استربس",category:"كريب",price:70,active:true},
+    {id:307,name:"كريب شاورما فراخ",category:"كريب",price:70,active:true},
+    {id:308,name:"كريب مكس لحوم",category:"كريب",price:80,active:true},
+    {id:309,name:"كريب مكس فراخ",category:"كريب",price:80,active:true},
+    {id:310,name:"كريب الملك",category:"كريب",price:90,active:true},
+    {id:311,name:"كريب السوبر",category:"كريب",price:100,active:true},
+
+    {id:401,name:"فرخة",category:"مشويات",price:290,active:true},
+    {id:402,name:"نص فرخة",category:"مشويات",price:150,active:true},
+    {id:403,name:"ربع فرخة صدر",category:"مشويات",price:85,active:true},
+    {id:404,name:"ربع فرخة ورك",category:"مشويات",price:75,active:true},
+    {id:405,name:"كيلو كفتة",category:"مشويات",price:400,active:true},
+    {id:406,name:"نص كفتة",category:"مشويات",price:200,active:true},
+    {id:407,name:"ربع كفتة",category:"مشويات",price:100,active:true},
+
+    {id:501,name:"بيتزا مارجريتا M",category:"بيتزا",price:100,active:true},
+    {id:502,name:"بيتزا مارجريتا L",category:"بيتزا",price:120,active:true},
+    {id:503,name:"بيتزا مكس جبن M",category:"بيتزا",price:120,active:true},
+    {id:504,name:"بيتزا مكس جبن L",category:"بيتزا",price:140,active:true},
+    {id:505,name:"بيتزا مفروم M",category:"بيتزا",price:120,active:true},
+    {id:506,name:"بيتزا مفروم L",category:"بيتزا",price:140,active:true},
+    {id:507,name:"بيتزا شاورما فراخ M",category:"بيتزا",price:120,active:true},
+    {id:508,name:"بيتزا شاورما فراخ L",category:"بيتزا",price:140,active:true},
+    {id:509,name:"بيتزا استربس M",category:"بيتزا",price:120,active:true},
+    {id:510,name:"بيتزا استربس L",category:"بيتزا",price:140,active:true},
+    {id:511,name:"بيتزا مكس فراخ M",category:"بيتزا",price:120,active:true},
+    {id:512,name:"بيتزا مكس فراخ L",category:"بيتزا",price:140,active:true},
+
+    {id:601,name:"بطاطس سوري",category:"السوري",price:25,active:true},
+    {id:602,name:"شاورما سوري صغير",category:"السوري",price:60,active:true},
+    {id:603,name:"شاورما سوري وسط",category:"السوري",price:80,active:true},
+    {id:604,name:"شاورما سوري كبير",category:"السوري",price:100,active:true},
+    {id:605,name:"كفتة سوري",category:"السوري",price:70,active:true},
+
+    {id:701,name:"عرض كفتة",category:"عروض",price:25,active:true},
+    {id:702,name:"عرض كبدة",category:"عروض",price:15,active:true},
+    {id:703,name:"عرض حواوشي",category:"عروض",price:15,active:true}
+  ],
+  shifts:[],
+  sales:[],
+  expenses:[],
+  priceHistory:[]
+};
+
+let db = loadDB();
+let selectedLoginUser = "admin";
+let session = JSON.parse(sessionStorage.getItem("rayyanSessionV3") || "null");
+let activePage = "dashboard";
+let cart = [];
+let activeCategory = "الكل";
+let orderType = "تيك أواي";
+let paymentType = "كاش";
+
+const pageMeta = {
+  dashboard:{title:"لوحة التحكم", subtitle:"ملخص عام للمدير", roles:["admin"]},
+  pos:{title:"الكاشير", subtitle:"إنشاء فواتير داخل الوردية المفتوحة", roles:["cashier"]},
+  shift:{title:"الوردية", subtitle:"فتح وقفل الوردية وتقرير صافي المبيعات بعد المصروفات", roles:["cashier"]},
+  expenses:{title:"مصروفات الوردية", subtitle:"كل مصروف يتم ربطه بالكاشير والوردية الحالية", roles:["cashier"]},
+  prices:{title:"تحديث الأسعار", subtitle:"تعديل سريع للأسعار من حساب الأدمن", roles:["admin"]},
+  products:{title:"المنتجات", subtitle:"إضافة وحذف وتعديل المنتجات", roles:["admin"]},
+  reports:{title:"التقارير", subtitle:"تقارير المبيعات والمصروفات والورديات", roles:["admin"]},
+  users:{title:"المستخدمين", subtitle:"تغيير كلمات مرور الأدمن والكاشير 1 والكاشير 2", roles:["admin"]},
+  settings:{title:"الإعدادات", subtitle:"بيانات المطعم والنسخ الاحتياطي", roles:["admin"]}
+};
+
+const navLabels = {
+  dashboard:"لوحة التحكم",
+  pos:"الكاشير",
+  shift:"الوردية",
+  expenses:"المصروفات",
+  prices:"تحديث الأسعار",
+  products:"المنتجات",
+  reports:"التقارير",
+  users:"المستخدمين",
+  settings:"الإعدادات"
+};
+
+const roleLabels = {admin:"أدمن", cashier:"كاشير"};
+const $ = (id)=>document.getElementById(id);
+const money = (n)=>`${Number(n || 0).toLocaleString("ar-EG")} ج`;
+const uid = ()=>Date.now() + Math.floor(Math.random()*999);
+const dateOnly = (d)=>String(d || "").slice(0,10);
+const todayStr = ()=>new Date().toISOString().slice(0,10);
+
+function loadDB(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(!raw){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultData));
+    return structuredClone(defaultData);
+  }
+  try{
+    const parsed = JSON.parse(raw);
+    const merged = {...structuredClone(defaultData), ...parsed};
+    ["users","products","shifts","sales","expenses","priceHistory"].forEach(k=>{
+      if(!Array.isArray(merged[k])) merged[k] = [];
+    });
+    return merged;
+  }catch(e){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultData));
+    return structuredClone(defaultData);
+  }
+}
+function saveDB(){localStorage.setItem(STORAGE_KEY, JSON.stringify(db))}
+function toast(msg){
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2500);
+}
+
+function renderLoginChoices(){
+  const box = $("loginUserChoices");
+  const users = db.users.filter(u=>["admin","cashier1","cashier2"].includes(u.username));
+  box.innerHTML = users.map(u=>`
+    <button class="user-choice ${selectedLoginUser===u.username?"active":""}" onclick="selectLoginUser('${u.username}')">
+      ${u.name}
+      <span>${roleLabels[u.role]}</span>
+    </button>
+  `).join("");
+}
+function selectLoginUser(username){
+  selectedLoginUser = username;
+  renderLoginChoices();
+  $("loginPassword").focus();
+}
+function login(){
+  const password = $("loginPassword").value;
+  const user = db.users.find(u=>u.username===selectedLoginUser && u.password===password && u.active);
+  if(!user){toast("كلمة المرور غير صحيحة أو المستخدم موقوف.");return}
+  session = {id:user.id, username:user.username, name:user.name, role:user.role};
+  sessionStorage.setItem("rayyanSessionV3", JSON.stringify(session));
+  startApp();
+}
+function logout(){
+  sessionStorage.removeItem("rayyanSessionV3");
+  session = null;
+  location.reload();
+}
+function can(page){
+  return session && pageMeta[page].roles.includes(session.role);
+}
+function startApp(){
+  $("loginScreen").classList.add("hidden");
+  $("app").classList.remove("hidden");
+  $("currentUserName").textContent = session.name;
+  $("currentUserRole").textContent = roleLabels[session.role];
+  activePage = session.role === "admin" ? "dashboard" : "shift";
+  renderNav();
+  showPage(activePage);
+}
+function renderNav(){
+  const nav = $("nav");
+  nav.innerHTML = "";
+  Object.keys(pageMeta).forEach(page=>{
+    if(!can(page)) return;
+    const btn = document.createElement("button");
+    btn.className = page===activePage ? "active" : "";
+    btn.innerHTML = `<span>${navLabels[page]}</span><span>›</span>`;
+    btn.onclick = ()=>showPage(page);
+    nav.appendChild(btn);
+  });
+  updateShiftLine();
+}
+function showPage(page){
+  if(!can(page)){toast("ليس لديك صلاحية لهذه الصفحة.");return}
+  activePage = page;
+  document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
+  $(`page-${page}`).classList.remove("hidden");
+  $("pageTitle").textContent = pageMeta[page].title;
+  $("pageSubtitle").textContent = pageMeta[page].subtitle;
+  renderNav();
+
+  if(page==="dashboard") renderDashboard();
+  if(page==="pos") renderPOS();
+  if(page==="shift") renderShift();
+  if(page==="expenses") renderExpenses();
+  if(page==="prices") renderPrices();
+  if(page==="products") renderProducts();
+  if(page==="reports") renderReports();
+  if(page==="users") renderUsers();
+  if(page==="settings") renderSettings();
+}
+
+function currentShift(){
+  if(!session || session.role!=="cashier") return null;
+  return db.shifts.find(s=>s.cashierId===session.id && s.status==="open") || null;
+}
+function updateShiftLine(){
+  const line = $("currentShiftLine");
+  if(!line || !session) return;
+  if(session.role==="admin"){
+    line.innerHTML = `النظام: <b>إدارة كاملة</b>`;
+    return;
+  }
+  const sh = currentShift();
+  line.innerHTML = sh ? `الوردية: <b>مفتوحة #${sh.id}</b>` : `الوردية: <b>لا توجد وردية مفتوحة</b>`;
+}
+function requireShiftHTML(){
+  return `
+    <div class="card">
+      <h3 class="card-title">لا توجد وردية مفتوحة</h3>
+      <div class="hint">لا يمكن البيع أو تسجيل المصروفات قبل فتح وردية للكاشير الحالي.</div>
+      <button class="btn btn-main" onclick="showPage('shift')">فتح الوردية</button>
+    </div>
+  `;
+}
+function shiftData(shiftId){
+  const sales = db.sales.filter(s=>s.shiftId===shiftId);
+  const expenses = db.expenses.filter(e=>e.shiftId===shiftId);
+  const totalSales = sales.reduce((sum,s)=>sum+Number(s.total||0),0);
+  const totalExpenses = expenses.reduce((sum,e)=>sum+Number(e.amount||0),0);
+  const net = totalSales - totalExpenses;
+  const items = {};
+  sales.forEach(s=>{
+    (s.items||[]).forEach(i=>{
+      if(!items[i.name]) items[i.name] = {name:i.name, qty:0, total:0};
+      items[i.name].qty += Number(i.qty||0);
+      items[i.name].total += Number(i.qty||0) * Number(i.price||0);
+    });
+  });
+  const topItems = Object.values(items).sort((a,b)=>b.qty-a.qty);
+  const byPayment = groupSum(sales,"paymentType","total");
+  return {sales,expenses,totalSales,totalExpenses,net,topItems,byPayment};
+}
+function renderShift(){
+  const sh = currentShift();
+
+  if(!sh){
+    $("page-shift").innerHTML = `
+      <div class="card">
+        <h3 class="card-title">فتح وردية جديدة</h3>
+        <div class="hint">
+          سيتم ربط كل المبيعات والمصروفات بهذه الوردية وباسم المستخدم الحالي: <b>${session.name}</b>.
+        </div>
+        <div class="form-grid-2">
+          <div>
+            <label>رصيد بداية الوردية / عهدة اختيارية</label>
+            <input id="openCash" type="number" min="0" placeholder="مثال: 500" />
+          </div>
+          <div>
+            <label>ملاحظة بداية الوردية</label>
+            <input id="openNote" placeholder="اختياري" />
+          </div>
+        </div>
+        <button class="btn btn-main btn-full" onclick="openShift()">فتح الوردية</button>
+      </div>
+    `;
+    return;
+  }
+
+  const d = shiftData(sh.id);
+  $("page-shift").innerHTML = `
+    <div class="grid-4">
+      <div class="stat"><span>مبيعات الوردية</span><strong>${money(d.totalSales)}</strong></div>
+      <div class="stat"><span>مصروفات الوردية</span><strong>${money(d.totalExpenses)}</strong></div>
+      <div class="stat"><span>الصافي بعد الخصم</span><strong>${money(d.net)}</strong></div>
+      <div class="stat"><span>عدد الفواتير</span><strong>${d.sales.length}</strong></div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h3 class="card-title">
+        <span>وردية مفتوحة للكاشير: ${session.name}</span>
+        <span class="badge good">مفتوحة</span>
+      </h3>
+      <div class="receipt-info">
+        <div>رقم الوردية: <b>${sh.id}</b></div>
+        <div>بدأت: <b>${new Date(sh.start).toLocaleString("ar-EG")}</b></div>
+        <div>عهدة البداية: <b>${money(sh.openingCash)}</b></div>
+        <div>ملاحظة: <b>${sh.openNote || "-"}</b></div>
+      </div>
+      <div class="row">
+        <button class="btn btn-main" onclick="showPage('pos')">فتح الكاشير</button>
+        <button class="btn btn-soft" onclick="showPage('expenses')">تسجيل مصروف</button>
+        <button class="btn btn-warn" onclick="showCloseShiftModal()">قفل الوردية وإظهار التقرير النهائي</button>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3 class="card-title">الأصناف المباعة في الوردية</h3>
+        ${itemsList(d.topItems)}
+      </div>
+      <div class="card">
+        <h3 class="card-title">إجمالي حسب طريقة الدفع</h3>
+        ${simpleMoneyList(d.byPayment)}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">فواتير الوردية</h3>
+      ${salesTable(d.sales.slice().reverse(), false)}
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">مصروفات الوردية</h3>
+      ${expensesTable(d.expenses.slice().reverse(), false)}
+    </div>
+  `;
+}
+function openShift(){
+  if(currentShift()){toast("توجد وردية مفتوحة بالفعل.");return}
+  const sh = {
+    id:uid(),
+    cashierId:session.id,
+    cashierName:session.name,
+    start:new Date().toISOString(),
+    end:null,
+    status:"open",
+    openingCash:Number($("openCash").value || 0),
+    openNote:$("openNote").value.trim(),
+    closingCash:0,
+    closeNote:"",
+    totals:null
+  };
+  db.shifts.push(sh);
+  saveDB();
+  toast("تم فتح الوردية.");
+  showPage("pos");
+}
+function showCloseShiftModal(){
+  const sh = currentShift();
+  if(!sh) return;
+  const d = shiftData(sh.id);
+  showModal(`
+    <div class="modal-head no-print">
+      <h2>تقرير قفل الوردية</h2>
+      <button class="btn btn-soft" onclick="closeModal()">×</button>
+    </div>
+    <div id="shiftCloseReport" class="printable">
+      ${shiftReportHTML(sh,d,false)}
+    </div>
+    <div class="no-print" style="margin-top:12px;">
+      <div class="form-grid-2">
+        <div>
+          <label>النقدية الموجودة في الدرج عند القفل</label>
+          <input id="closingCash" type="number" min="0" placeholder="اختياري" />
+        </div>
+        <div>
+          <label>ملاحظة القفل</label>
+          <input id="closeNote" placeholder="اختياري" />
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px;">
+        <button class="btn btn-warn" onclick="closeShiftNow()">اعتماد قفل الوردية وطباعة التقرير</button>
+        <button class="btn btn-outline" onclick="window.print()">طباعة قبل القفل</button>
+      </div>
+    </div>
+  `);
+}
+function closeShiftNow(){
+  const sh = currentShift();
+  if(!sh) return;
+  const d = shiftData(sh.id);
+  sh.end = new Date().toISOString();
+  sh.status = "closed";
+  sh.closingCash = Number($("closingCash").value || 0);
+  sh.closeNote = $("closeNote").value.trim();
+  sh.totals = {
+    totalSales:d.totalSales,
+    totalExpenses:d.totalExpenses,
+    net:d.net,
+    invoices:d.sales.length
+  };
+  saveDB();
+  $("shiftCloseReport").innerHTML = shiftReportHTML(sh, d, true);
+  toast("تم قفل الوردية.");
+  window.print();
+  closeModal();
+  showPage("shift");
+}
+function shiftReportHTML(sh,d,closed){
+  return `
+    <div class="receipt-head">
+      <h2>${db.settings.restaurantName}</h2>
+      <p>${db.settings.address}</p>
+      <p>${db.settings.phone}</p>
+      <p><b>${closed ? "تقرير وردية مغلقة" : "تقرير وردية قبل القفل"}</b></p>
+    </div>
+    <div class="receipt-info">
+      <div>الكاشير: <b>${sh.cashierName}</b></div>
+      <div>رقم الوردية: <b>${sh.id}</b></div>
+      <div>بداية الوردية: <b>${new Date(sh.start).toLocaleString("ar-EG")}</b></div>
+      <div>نهاية الوردية: <b>${sh.end ? new Date(sh.end).toLocaleString("ar-EG") : "-"}</b></div>
+      <div>عهدة البداية: <b>${money(sh.openingCash)}</b></div>
+      <div>النقدية عند القفل: <b>${money(sh.closingCash)}</b></div>
+    </div>
+
+    <div class="summary">
+      <div class="sum-row"><span>إجمالي المبيعات</span><b>${money(d.totalSales)}</b></div>
+      <div class="sum-row"><span>إجمالي المصروفات</span><b>${money(d.totalExpenses)}</b></div>
+      <div class="sum-row total"><span>الصافي النهائي = المبيعات - المصروفات</span><b>${money(d.net)}</b></div>
+      <div class="sum-row"><span>عدد الفواتير</span><b>${d.sales.length}</b></div>
+    </div>
+
+    <h3>الأصناف التي تم بيعها</h3>
+    ${itemsList(d.topItems)}
+
+    <h3>المصروفات التي تم خصمها من الوردية</h3>
+    ${expensesCompact(d.expenses)}
+
+    <p class="footer-note">تم إصدار التقرير بواسطة نظام الريان</p>
+  `;
+}
+function expensesCompact(expenses){
+  if(!expenses.length) return `<div class="cart-empty">لا توجد مصروفات</div>`;
+  return expenses.map(e=>`
+    <div class="sum-row">
+      <span>${e.title} — ${e.category}</span>
+      <b>${money(e.amount)}</b>
+    </div>
+  `).join("");
+}
+
+function renderPOS(){
+  const sh = currentShift();
+  if(!sh){$("page-pos").innerHTML = requireShiftHTML(); return}
+  $("page-pos").innerHTML = `
+    <div class="layout-pos">
+      <section>
+        <div class="card">
+          <h3 class="card-title">بيانات الطلب</h3>
+          <div class="row">
+            ${["تيك أواي","صالة","دليفري"].map(t=>`<button class="tab ${orderType===t?"active":""}" onclick="setOrderType('${t}')">${t}</button>`).join("")}
+          </div>
+          <div class="form-grid" style="margin-top:12px;">
+            <input id="posTable" placeholder="رقم الترابيزة" oninput="renderReceipt()" />
+            <input id="posCustomer" placeholder="اسم العميل" oninput="renderReceipt()" />
+            <input id="posPhone" placeholder="رقم الهاتف" oninput="renderReceipt()" />
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">المنيو</h3>
+          <input id="posSearch" placeholder="بحث باسم الصنف أو السعر..." oninput="renderMenu()" />
+          <div id="categoryTabs" class="tabs"></div>
+          <div id="menuGrid" class="menu-grid"></div>
+        </div>
+      </section>
+
+      <aside class="receipt-box">
+        <div id="receiptArea"></div>
+        <div class="no-print">
+          <div class="card" style="box-shadow:none;padding:0;margin-top:14px;">
+            <h3 class="card-title">الدفع والإضافات</h3>
+            <div class="row">
+              ${["كاش","فيزا","محفظة"].map(p=>`<button class="tab ${paymentType===p?"active":""}" onclick="setPayment('${p}')">${p}</button>`).join("")}
+            </div>
+            <div class="form-grid" style="margin-top:12px;">
+              <input id="posService" type="number" min="0" placeholder="خدمة" value="${db.settings.serviceDefault || 0}" oninput="renderReceipt()" />
+              <input id="posDelivery" type="number" min="0" placeholder="دليفري" value="${db.settings.deliveryDefault || 0}" oninput="renderReceipt()" />
+              <input id="posDiscount" type="number" min="0" placeholder="خصم" oninput="renderReceipt()" />
+            </div>
+            <textarea id="posNote" rows="2" placeholder="ملاحظات الطلب..." oninput="renderReceipt()"></textarea>
+          </div>
+          <div class="row">
+            <button class="btn btn-good" onclick="completeSale(false)">حفظ الفاتورة</button>
+            <button class="btn btn-main" onclick="completeSale(true)">حفظ وطباعة</button>
+            <button class="btn btn-bad" onclick="clearCart()">فاتورة جديدة</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  `;
+  renderCategories();
+  renderMenu();
+  renderReceipt();
+}
+function setOrderType(t){orderType=t; renderPOS()}
+function setPayment(p){paymentType=p; renderPOS()}
+function getCategories(){
+  return ["الكل", ...new Set(db.products.filter(p=>p.active).map(p=>p.category || "بدون قسم"))];
+}
+function renderCategories(){
+  const box = $("categoryTabs");
+  if(!box) return;
+  box.innerHTML = getCategories().map(c=>`<button class="tab ${activeCategory===c?"active":""}" onclick="activeCategory='${safe(c)}'; renderCategories(); renderMenu();">${c}</button>`).join("");
+}
+function safe(s){return String(s).replace(/'/g,"\\'")}
+function renderMenu(){
+  const grid = $("menuGrid");
+  if(!grid) return;
+  const q = $("posSearch")?.value.trim() || "";
+  const items = db.products.filter(p=>p.active)
+    .filter(p=>activeCategory==="الكل" || p.category===activeCategory)
+    .filter(p=>!q || p.name.includes(q) || p.category.includes(q) || String(p.price).includes(q));
+  grid.innerHTML = items.map(p=>`
+    <button class="menu-item" onclick="addToCart(${p.id})">
+      <span class="name">${p.name}</span>
+      <span class="meta"><span class="badge">${p.category}</span><span class="price">${money(p.price)}</span></span>
+    </button>
+  `).join("") || `<div class="cart-empty" style="grid-column:1/-1;">لا توجد منتجات</div>`;
+}
+function addToCart(id){
+  const p = db.products.find(x=>x.id===id);
+  if(!p) return;
+  const found = cart.find(i=>i.id===id);
+  if(found) found.qty++;
+  else cart.push({id:p.id,name:p.name,category:p.category,price:Number(p.price),qty:1});
+  renderReceipt();
+}
+function changeQty(id,delta){
+  const item = cart.find(i=>i.id===id);
+  if(!item) return;
+  item.qty += delta;
+  if(item.qty <= 0) cart = cart.filter(i=>i.id!==id);
+  renderReceipt();
+}
+function removeCartItem(id){cart = cart.filter(i=>i.id!==id); renderReceipt()}
+function cartTotals(){
+  const subtotal = cart.reduce((sum,i)=>sum+i.price*i.qty,0);
+  const service = Number($("posService")?.value || 0);
+  const delivery = Number($("posDelivery")?.value || 0);
+  const discount = Number($("posDiscount")?.value || 0);
+  const total = Math.max(0, subtotal + service + delivery - discount);
+  return {subtotal,service,delivery,discount,total};
+}
+function renderReceipt(){
+  const box = $("receiptArea");
+  if(!box) return;
+  const sh = currentShift();
+  const t = cartTotals();
+  box.innerHTML = `
+    <div class="printable" id="saleReceipt">
+      <div class="receipt-head">
+        <h2>${db.settings.restaurantName}</h2>
+        <p>${db.settings.address}</p>
+        <p>${db.settings.phone}</p>
+      </div>
+      <div class="receipt-info">
+        <div>الكاشير: <b>${session.name}</b></div>
+        <div>الوردية: <b>${sh ? sh.id : "-"}</b></div>
+        <div>نوع الطلب: <b>${orderType}</b></div>
+        <div>الدفع: <b>${paymentType}</b></div>
+        <div>التاريخ: <b>${new Date().toLocaleString("ar-EG")}</b></div>
+        <div>ترابيزة: <b>${$("posTable")?.value || "-"}</b></div>
+        <div>العميل: <b>${$("posCustomer")?.value || "-"}</b></div>
+        <div>الهاتف: <b>${$("posPhone")?.value || "-"}</b></div>
+      </div>
+      ${cart.length ? cart.map(i=>`
+        <div class="cart-line">
+          <div class="line-top"><span>${i.name}</span><span>${money(i.price*i.qty)}</span></div>
+          <div class="line-sub">${i.qty} × ${money(i.price)}</div>
+          <div class="qty-row no-print">
+            <div class="qty-controls">
+              <button class="round" onclick="changeQty(${i.id},1)">+</button>
+              <b>${i.qty}</b>
+              <button class="round" onclick="changeQty(${i.id},-1)">-</button>
+            </div>
+            <button class="round del" onclick="removeCartItem(${i.id})">×</button>
+          </div>
+        </div>
+      `).join("") : `<div class="cart-empty">الفاتورة فارغة</div>`}
+      <div class="summary">
+        <div class="sum-row"><span>الإجمالي</span><b>${money(t.subtotal)}</b></div>
+        <div class="sum-row"><span>خدمة</span><b>${money(t.service)}</b></div>
+        <div class="sum-row"><span>دليفري</span><b>${money(t.delivery)}</b></div>
+        <div class="sum-row"><span>خصم</span><b>${money(t.discount)}</b></div>
+        <div class="sum-row total"><span>المطلوب</span><b>${money(t.total)}</b></div>
+      </div>
+      ${$("posNote")?.value.trim() ? `<div class="hint">ملاحظات: <b>${$("posNote").value.trim()}</b></div>` : ""}
+      <p class="footer-note">شكرًا لزيارتكم</p>
+    </div>
+  `;
+}
+function completeSale(printIt){
+  const sh = currentShift();
+  if(!sh){toast("افتح وردية أولًا.");return}
+  if(!cart.length){toast("الفاتورة فارغة.");return}
+  const t = cartTotals();
+  const sale = {
+    id:uid(),
+    invoice:String(Math.floor(100000+Math.random()*900000)),
+    date:new Date().toISOString(),
+    shiftId:sh.id,
+    cashierId:session.id,
+    cashierName:session.name,
+    orderType,
+    paymentType,
+    table:$("posTable")?.value || "",
+    customer:$("posCustomer")?.value || "",
+    phone:$("posPhone")?.value || "",
+    note:$("posNote")?.value || "",
+    items:structuredClone(cart),
+    ...t
+  };
+  db.sales.push(sale);
+  saveDB();
+  toast("تم حفظ الفاتورة داخل وردية " + session.name);
+  if(printIt) window.print();
+  cart = [];
+  renderPOS();
+}
+function clearCart(){cart=[];renderPOS();toast("تم فتح فاتورة جديدة.")}
+
+function renderExpenses(){
+  const sh = currentShift();
+  if(!sh){$("page-expenses").innerHTML = requireShiftHTML(); return}
+  const d = shiftData(sh.id);
+  $("page-expenses").innerHTML = `
+    <div class="card">
+      <h3 class="card-title">إضافة مصروف على الوردية الحالية</h3>
+      <div class="hint">أي مصروف هنا سيُخصم مباشرة من إجمالي مبيعات وردية <b>${session.name}</b> عند قفل الوردية.</div>
+      <div class="form-grid">
+        <div><label>بند المصروف</label><input id="expenseTitle" placeholder="مثال: خضار / عيش / مواصلات" /></div>
+        <div><label>القسم</label><input id="expenseCategory" placeholder="مشتريات / تشغيل / أخرى" /></div>
+        <div><label>المبلغ</label><input id="expenseAmount" type="number" min="0" placeholder="0" /></div>
+      </div>
+      <label>ملاحظات</label>
+      <textarea id="expenseNote" rows="2" placeholder="اختياري"></textarea>
+      <button class="btn btn-main btn-full" onclick="addExpense()">حفظ المصروف وخصمه من الوردية</button>
+    </div>
+
+    <div class="grid-3">
+      <div class="stat"><span>مبيعات الوردية</span><strong>${money(d.totalSales)}</strong></div>
+      <div class="stat"><span>مصروفات الوردية</span><strong>${money(d.totalExpenses)}</strong></div>
+      <div class="stat"><span>الصافي بعد الخصم</span><strong>${money(d.net)}</strong></div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h3 class="card-title">مصروفات هذه الوردية</h3>
+      ${expensesTable(d.expenses.slice().reverse(), true)}
+    </div>
+  `;
+}
+function addExpense(){
+  const sh = currentShift();
+  if(!sh){toast("افتح وردية أولًا.");return}
+  const title = $("expenseTitle").value.trim();
+  const category = $("expenseCategory").value.trim() || "عام";
+  const amount = Number($("expenseAmount").value || 0);
+  const note = $("expenseNote").value.trim();
+  if(!title || amount <= 0){toast("اكتب بند المصروف والمبلغ بشكل صحيح.");return}
+  db.expenses.push({
+    id:uid(),
+    date:new Date().toISOString(),
+    shiftId:sh.id,
+    cashierId:session.id,
+    cashierName:session.name,
+    title,category,amount,note
+  });
+  saveDB();
+  toast("تم تسجيل المصروف وخصمه من الوردية.");
+  renderExpenses();
+}
+function deleteExpense(id){
+  const exp = db.expenses.find(e=>e.id===id);
+  if(!exp) return;
+  if(session.role==="cashier" && exp.shiftId !== currentShift()?.id){
+    toast("لا يمكن حذف مصروف من وردية أخرى.");
+    return;
+  }
+  if(!confirm("حذف المصروف؟")) return;
+  db.expenses = db.expenses.filter(e=>e.id!==id);
+  saveDB();
+  if(activePage==="expenses") renderExpenses();
+  if(activePage==="reports") renderReports();
+}
+
+function renderDashboard(){
+  const today = todayStr();
+  const salesToday = db.sales.filter(s=>dateOnly(s.date)===today);
+  const expensesToday = db.expenses.filter(e=>dateOnly(e.date)===today);
+  const totalSales = salesToday.reduce((a,s)=>a+Number(s.total||0),0);
+  const totalExpenses = expensesToday.reduce((a,e)=>a+Number(e.amount||0),0);
+  const openShifts = db.shifts.filter(s=>s.status==="open");
+  $("page-dashboard").innerHTML = `
+    <div class="grid-4">
+      <div class="stat"><span>مبيعات اليوم</span><strong>${money(totalSales)}</strong></div>
+      <div class="stat"><span>مصروفات اليوم</span><strong>${money(totalExpenses)}</strong></div>
+      <div class="stat"><span>الصافي اليوم</span><strong>${money(totalSales-totalExpenses)}</strong></div>
+      <div class="stat"><span>ورديات مفتوحة</span><strong>${openShifts.length}</strong></div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h3 class="card-title">اختصارات الأدمن</h3>
+      <div class="row">
+        <button class="btn btn-warn" onclick="showPage('prices')">تحديث الأسعار</button>
+        <button class="btn btn-soft" onclick="showProductModal()">إضافة منتج</button>
+        <button class="btn btn-blue" onclick="showPage('reports')">التقارير</button>
+        <button class="btn btn-outline" onclick="showPage('users')">كلمات المرور</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">الورديات المفتوحة الآن</h3>
+      ${shiftsTable(openShifts)}
+    </div>
+
+    <div class="card">
+      <h3 class="card-title">آخر الورديات المغلقة</h3>
+      ${shiftsTable(db.shifts.filter(s=>s.status==="closed").slice().reverse().slice(0,8))}
+    </div>
+  `;
+}
+
+function renderReports(){
+  const from = $("reportFrom")?.value || todayStr();
+  const to = $("reportTo")?.value || todayStr();
+  const cashier = $("reportCashier")?.value || "all";
+  let sales = db.sales.filter(s=>dateOnly(s.date)>=from && dateOnly(s.date)<=to);
+  let expenses = db.expenses.filter(e=>dateOnly(e.date)>=from && dateOnly(e.date)<=to);
+  let shifts = db.shifts.filter(s=>dateOnly(s.start)>=from && dateOnly(s.start)<=to);
+
+  if(cashier !== "all"){
+    sales = sales.filter(s=>String(s.cashierId)===cashier);
+    expenses = expenses.filter(e=>String(e.cashierId)===cashier);
+    shifts = shifts.filter(s=>String(s.cashierId)===cashier);
+  }
+
+  const totalSales = sales.reduce((a,s)=>a+Number(s.total||0),0);
+  const totalExpenses = expenses.reduce((a,e)=>a+Number(e.amount||0),0);
+  const net = totalSales-totalExpenses;
+
+  $("page-reports").innerHTML = `
+    <div class="card no-print">
+      <h3 class="card-title">فلترة التقرير</h3>
+      <div class="form-grid">
+        <div><label>من</label><input id="reportFrom" type="date" value="${from}" onchange="renderReports()" /></div>
+        <div><label>إلى</label><input id="reportTo" type="date" value="${to}" onchange="renderReports()" /></div>
+        <div><label>الكاشير</label>
+          <select id="reportCashier" onchange="renderReports()">
+            <option value="all">كل الكاشيرات</option>
+            ${db.users.filter(u=>u.role==="cashier").map(u=>`<option value="${u.id}" ${cashier==u.id?'selected':''}>${u.name}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px;">
+        <button class="btn btn-outline" onclick="window.print()">طباعة التقرير</button>
+        <button class="btn btn-blue" onclick="exportReportCSV()">تصدير CSV</button>
+      </div>
+    </div>
+
+    <div class="grid-4">
+      <div class="stat"><span>إجمالي المبيعات</span><strong>${money(totalSales)}</strong></div>
+      <div class="stat"><span>إجمالي المصروفات</span><strong>${money(totalExpenses)}</strong></div>
+      <div class="stat"><span>الصافي النهائي</span><strong>${money(net)}</strong></div>
+      <div class="stat"><span>عدد الفواتير</span><strong>${sales.length}</strong></div>
+    </div>
+
+    <div class="grid-2" style="margin-top:16px;">
+      <div class="card"><h3 class="card-title">الأصناف المباعة</h3>${itemsList(getTopItemsFromSales(sales))}</div>
+      <div class="card"><h3 class="card-title">المبيعات حسب طريقة الدفع</h3>${simpleMoneyList(groupSum(sales,"paymentType","total"))}</div>
+    </div>
+
+    <div class="card"><h3 class="card-title">الورديات</h3>${shiftsTable(shifts.slice().reverse())}</div>
+    <div class="card"><h3 class="card-title">الفواتير</h3>${salesTable(sales.slice().reverse(), true)}</div>
+    <div class="card"><h3 class="card-title">المصروفات</h3>${expensesTable(expenses.slice().reverse(), true)}</div>
+  `;
+}
+function exportReportCSV(){
+  const from = $("reportFrom")?.value || todayStr();
+  const to = $("reportTo")?.value || todayStr();
+  const cashier = $("reportCashier")?.value || "all";
+  let sales = db.sales.filter(s=>dateOnly(s.date)>=from && dateOnly(s.date)<=to);
+  let expenses = db.expenses.filter(e=>dateOnly(e.date)>=from && dateOnly(e.date)<=to);
+  if(cashier !== "all"){
+    sales = sales.filter(s=>String(s.cashierId)===cashier);
+    expenses = expenses.filter(e=>String(e.cashierId)===cashier);
+  }
+  const rows = [["نوع","التاريخ","الكاشير","الوردية","الوصف","المبلغ"]];
+  sales.forEach(s=>rows.push(["مبيعات",new Date(s.date).toLocaleString("ar-EG"),s.cashierName,s.shiftId,"فاتورة "+s.invoice,s.total]));
+  expenses.forEach(e=>rows.push(["مصروف",new Date(e.date).toLocaleString("ar-EG"),e.cashierName,e.shiftId,e.title,e.amount]));
+  const csv = "\ufeff" + rows.map(r=>r.map(c=>`"${String(c??"").replace(/"/g,'""')}"`).join(",")).join("\n");
+  downloadFile(csv, `تقرير_الريان_${from}_إلى_${to}.csv`, "text/csv;charset=utf-8");
+}
+
+function renderPrices(){
+  const q = $("priceSearch")?.value || "";
+  const cat = $("priceCat")?.value || "الكل";
+  const products = db.products.filter(p=>p.active)
+    .filter(p=>cat==="الكل" || p.category===cat)
+    .filter(p=>!q || p.name.includes(q) || p.category.includes(q) || String(p.price).includes(q));
+  $("page-prices").innerHTML = `
+    <div class="card">
+      <h3 class="card-title">تعديل الأسعار السريع</h3>
+      <div class="hint">الأدمن فقط يقدر يغير الأسعار. كل تعديل بيتسجل في سجل تغييرات الأسعار باسم المستخدم والتاريخ.</div>
+      <div class="form-grid">
+        <div><label>بحث</label><input id="priceSearch" value="${q}" placeholder="اسم الصنف أو السعر" oninput="renderPrices()" /></div>
+        <div><label>القسم</label><select id="priceCat" onchange="renderPrices()">${getCategories().map(c=>`<option value="${c}" ${cat===c?'selected':''}>${c}</option>`).join("")}</select></div>
+        <div><label>تعديل جماعي</label><button class="btn btn-warn" onclick="showBulkPriceModal()">زيادة/خصم قسم كامل</button></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>الصنف</th><th>القسم</th><th>السعر الحالي</th><th>السعر الجديد</th><th>الفرق</th><th>حفظ</th></tr></thead>
+          <tbody>
+            ${products.map(p=>`
+              <tr>
+                <td><b>${p.name}</b></td>
+                <td>${p.category}</td>
+                <td>${money(p.price)}</td>
+                <td><input id="np-${p.id}" type="number" value="${p.price}" oninput="previewDiff(${p.id},${p.price})" /></td>
+                <td id="df-${p.id}">0 ج</td>
+                <td><button class="btn btn-sm btn-main" onclick="savePrice(${p.id})">حفظ السعر</button></td>
+              </tr>
+            `).join("") || `<tr><td colspan="6">لا توجد منتجات</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="card-title">آخر تغييرات الأسعار</h3>
+      ${priceHistoryTable()}
+    </div>
+  `;
+}
+function previewDiff(id,oldPrice){
+  const v = Number($(`np-${id}`).value || 0);
+  const diff = v - Number(oldPrice || 0);
+  const el = $(`df-${id}`);
+  el.textContent = money(diff);
+  el.style.color = diff>0 ? "var(--good)" : diff<0 ? "var(--bad)" : "var(--muted)";
+}
+function savePrice(id){
+  const p = db.products.find(x=>x.id===id);
+  const newPrice = Number($(`np-${id}`).value || 0);
+  if(!p || newPrice<=0){toast("اكتب سعرًا صحيحًا.");return}
+  const oldPrice = Number(p.price || 0);
+  if(newPrice===oldPrice){toast("السعر لم يتغير.");return}
+  p.price = newPrice;
+  db.priceHistory.push({id:uid(),date:new Date().toISOString(),productId:p.id,productName:p.name,category:p.category,oldPrice,newPrice,diff:newPrice-oldPrice,userName:session.name,type:"تعديل مباشر"});
+  saveDB();
+  toast("تم تحديث السعر.");
+  renderPrices();
+}
+function showBulkPriceModal(){
+  showModal(`
+    <div class="modal-head">
+      <h2>تعديل جماعي للأسعار</h2>
+      <button class="btn btn-soft" onclick="closeModal()">×</button>
+    </div>
+    <div class="form-grid-2">
+      <div><label>القسم</label><select id="bulkCat">${getCategories().filter(c=>c!=="الكل").map(c=>`<option value="${c}">${c}</option>`).join("")}</select></div>
+      <div><label>نوع التعديل</label><select id="bulkMode"><option value="plusPercent">زيادة بنسبة %</option><option value="minusPercent">خصم بنسبة %</option><option value="plusFixed">زيادة مبلغ ثابت</option><option value="minusFixed">خصم مبلغ ثابت</option></select></div>
+      <div><label>القيمة</label><input id="bulkValue" type="number" min="0" /></div>
+      <div><label>تقريب السعر</label><select id="bulkRound"><option value="1">بدون تقريب</option><option value="5">أقرب 5 جنيه</option><option value="10">أقرب 10 جنيه</option></select></div>
+    </div>
+    <button class="btn btn-warn btn-full" onclick="applyBulkPrice()">تطبيق</button>
+  `);
+}
+function applyBulkPrice(){
+  const cat = $("bulkCat").value;
+  const mode = $("bulkMode").value;
+  const value = Number($("bulkValue").value || 0);
+  const round = Number($("bulkRound").value || 1);
+  if(value<=0){toast("اكتب قيمة صحيحة.");return}
+  if(!confirm("سيتم تعديل أسعار قسم كامل. هل أنت متأكد؟")) return;
+  let changed = 0;
+  db.products.filter(p=>p.active && p.category===cat).forEach(p=>{
+    const oldPrice = Number(p.price || 0);
+    let newPrice = oldPrice;
+    if(mode==="plusPercent") newPrice = oldPrice * (1 + value/100);
+    if(mode==="minusPercent") newPrice = oldPrice * (1 - value/100);
+    if(mode==="plusFixed") newPrice = oldPrice + value;
+    if(mode==="minusFixed") newPrice = oldPrice - value;
+    newPrice = Math.max(1, Math.round(newPrice / round) * round);
+    if(newPrice !== oldPrice){
+      p.price = newPrice;
+      db.priceHistory.push({id:uid(),date:new Date().toISOString(),productId:p.id,productName:p.name,category:p.category,oldPrice,newPrice,diff:newPrice-oldPrice,userName:session.name,type:"تعديل جماعي"});
+      changed++;
+    }
+  });
+  saveDB();
+  closeModal();
+  renderPrices();
+  toast("تم تعديل أسعار " + changed + " صنف.");
+}
+
+function renderProducts(){
+  const q = $("productSearch")?.value || "";
+  const products = db.products.filter(p=>!q || p.name.includes(q) || p.category.includes(q) || String(p.price).includes(q));
+  $("page-products").innerHTML = `
+    <div class="card">
+      <h3 class="card-title"><span>المنتجات</span><button class="btn btn-main" onclick="showProductModal()">إضافة منتج</button></h3>
+      <input id="productSearch" value="${q}" placeholder="بحث..." oninput="renderProducts()" />
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>الصنف</th><th>القسم</th><th>السعر</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+          <tbody>
+            ${products.map(p=>`
+              <tr>
+                <td><b>${p.name}</b></td><td>${p.category}</td><td>${money(p.price)}</td>
+                <td>${p.active?'<span class="badge good">نشط</span>':'<span class="badge bad">موقوف</span>'}</td>
+                <td><div class="actions"><button class="btn btn-sm btn-blue" onclick="showProductModal(${p.id})">تعديل</button><button class="btn btn-sm btn-warn" onclick="toggleProduct(${p.id})">${p.active?'إيقاف':'تشغيل'}</button><button class="btn btn-sm btn-bad" onclick="deleteProduct(${p.id})">حذف</button></div></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+function showProductModal(id=null){
+  const p = id ? db.products.find(x=>x.id===id) : {name:"",category:"",price:"",active:true};
+  showModal(`
+    <div class="modal-head"><h2>${id?"تعديل منتج":"إضافة منتج"}</h2><button class="btn btn-soft" onclick="closeModal()">×</button></div>
+    <div class="form-grid-2">
+      <div><label>اسم الصنف</label><input id="mProductName" value="${p.name||""}" /></div>
+      <div><label>القسم</label><input id="mProductCategory" value="${p.category||""}" /></div>
+      <div><label>السعر</label><input id="mProductPrice" type="number" value="${p.price||""}" /></div>
+      <div><label>الحالة</label><select id="mProductActive"><option value="true" ${p.active?'selected':''}>نشط</option><option value="false" ${!p.active?'selected':''}>موقوف</option></select></div>
+    </div>
+    <button class="btn btn-main btn-full" onclick="saveProduct(${id || "null"})">حفظ</button>
+  `);
+}
+function saveProduct(id){
+  const name = $("mProductName").value.trim();
+  const category = $("mProductCategory").value.trim();
+  const price = Number($("mProductPrice").value || 0);
+  const active = $("mProductActive").value === "true";
+  if(!name || !category || price<=0){toast("أكمل بيانات المنتج.");return}
+  if(id){
+    const p = db.products.find(x=>x.id===id);
+    const oldPrice = Number(p.price || 0);
+    p.name=name; p.category=category; p.price=price; p.active=active;
+    if(price!==oldPrice){
+      db.priceHistory.push({id:uid(),date:new Date().toISOString(),productId:p.id,productName:name,category,oldPrice,newPrice:price,diff:price-oldPrice,userName:session.name,type:"تعديل من المنتجات"});
+    }
+  }else{
+    db.products.push({id:uid(),name,category,price,active});
+  }
+  saveDB(); closeModal(); renderProducts(); toast("تم حفظ المنتج.");
+}
+function toggleProduct(id){
+  const p = db.products.find(x=>x.id===id);
+  if(!p) return;
+  p.active = !p.active;
+  saveDB(); renderProducts();
+}
+function deleteProduct(id){
+  if(!confirm("حذف المنتج نهائيًا؟")) return;
+  db.products = db.products.filter(p=>p.id!==id);
+  saveDB(); renderProducts();
+}
+
+function renderUsers(){
+  $("page-users").innerHTML = `
+    <div class="card">
+      <h3 class="card-title">المستخدمون الثلاثة الأساسيون</h3>
+      <div class="hint">هذه النسخة نظيفة بثلاثة اختيارات فقط عند الدخول: Admin، كاشير 1، كاشير 2. يمكنك تغيير الأسماء وكلمات المرور فقط.</div>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>الاسم الظاهر</th><th>اسم الدخول الداخلي</th><th>الصلاحية</th><th>كلمة المرور</th><th>الحالة</th><th>حفظ</th></tr></thead>
+          <tbody>
+            ${db.users.map(u=>`
+              <tr>
+                <td><input id="uname-${u.id}" value="${u.name}" /></td>
+                <td><b>${u.username}</b></td>
+                <td>${roleLabels[u.role]}</td>
+                <td><input id="upass-${u.id}" value="${u.password}" /></td>
+                <td><select id="uactive-${u.id}"><option value="true" ${u.active?'selected':''}>نشط</option><option value="false" ${!u.active?'selected':''}>موقوف</option></select></td>
+                <td><button class="btn btn-sm btn-main" onclick="saveUser(${u.id})">حفظ</button></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+function saveUser(id){
+  const u = db.users.find(x=>x.id===id);
+  if(!u) return;
+  u.name = $(`uname-${id}`).value.trim() || u.name;
+  u.password = $(`upass-${id}`).value || u.password;
+  u.active = $(`uactive-${id}`).value === "true";
+  saveDB();
+  toast("تم حفظ بيانات المستخدم.");
+  if(u.id===session.id){session.name=u.name; sessionStorage.setItem("rayyanSessionV3",JSON.stringify(session)); $("currentUserName").textContent=session.name}
+  renderLoginChoices();
+}
+
+function renderSettings(){
+  $("page-settings").innerHTML = `
+    <div class="card">
+      <h3 class="card-title">بيانات المطعم</h3>
+      <div class="form-grid-2">
+        <div><label>اسم المطعم</label><input id="setName" value="${db.settings.restaurantName}" /></div>
+        <div><label>الهاتف</label><input id="setPhone" value="${db.settings.phone}" /></div>
+        <div><label>العنوان</label><input id="setAddress" value="${db.settings.address}" /></div>
+        <div><label>خدمة افتراضية</label><input id="setService" type="number" value="${db.settings.serviceDefault||0}" /></div>
+        <div><label>دليفري افتراضي</label><input id="setDelivery" type="number" value="${db.settings.deliveryDefault||0}" /></div>
+      </div>
+      <button class="btn btn-main btn-full" onclick="saveSettings()">حفظ الإعدادات</button>
+    </div>
+    <div class="card">
+      <h3 class="card-title">البيانات</h3>
+      <div class="row">
+        <button class="btn btn-outline" onclick="backupData()">تحميل نسخة احتياطية</button>
+        <button class="btn btn-warn" onclick="resetData()">إعادة ضبط النظام</button>
+      </div>
+    </div>
+  `;
+}
+function saveSettings(){
+  db.settings.restaurantName = $("setName").value.trim() || "مطعم الريان";
+  db.settings.phone = $("setPhone").value.trim();
+  db.settings.address = $("setAddress").value.trim();
+  db.settings.serviceDefault = Number($("setService").value || 0);
+  db.settings.deliveryDefault = Number($("setDelivery").value || 0);
+  saveDB();
+  toast("تم حفظ الإعدادات.");
+}
+function resetData(){
+  if(!confirm("سيتم حذف كل بيانات هذه النسخة والرجوع للبداية. هل أنت متأكد؟")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  sessionStorage.removeItem("rayyanSessionV3");
+  location.reload();
+}
+
+function groupSum(items,key,amountKey){
+  const map = {};
+  items.forEach(i=>{
+    const k = i[key] || "غير محدد";
+    map[k] = (map[k] || 0) + Number(i[amountKey] || 0);
+  });
+  return Object.entries(map).map(([name,total])=>({name,total}));
+}
+function getTopItemsFromSales(sales){
+  const map = {};
+  sales.forEach(s=>(s.items||[]).forEach(i=>{
+    if(!map[i.name]) map[i.name] = {name:i.name,qty:0,total:0};
+    map[i.name].qty += Number(i.qty||0);
+    map[i.name].total += Number(i.qty||0)*Number(i.price||0);
+  }));
+  return Object.values(map).sort((a,b)=>b.qty-a.qty);
+}
+function itemsList(items){
+  if(!items.length) return `<div class="cart-empty">لا توجد أصناف</div>`;
+  return `<ol class="mini-list">${items.map(i=>`<li><b>${i.name}</b>: ${i.qty} قطعة — ${money(i.total)}</li>`).join("")}</ol>`;
+}
+function simpleMoneyList(items){
+  if(!items.length) return `<div class="cart-empty">لا توجد بيانات</div>`;
+  return items.map(i=>`<div class="sum-row"><span>${i.name}</span><b>${money(i.total)}</b></div>`).join("");
+}
+function shiftsTable(shifts){
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>رقم الوردية</th><th>الكاشير</th><th>البداية</th><th>النهاية</th><th>الحالة</th><th>المبيعات</th><th>المصروفات</th><th>الصافي</th><th>عرض</th></tr></thead>
+        <tbody>
+          ${shifts.length ? shifts.map(s=>{
+            const d = shiftData(s.id);
+            return `<tr>
+              <td><b>${s.id}</b></td>
+              <td>${s.cashierName}</td>
+              <td>${new Date(s.start).toLocaleString("ar-EG")}</td>
+              <td>${s.end ? new Date(s.end).toLocaleString("ar-EG") : "-"}</td>
+              <td>${s.status==="open" ? '<span class="badge good">مفتوحة</span>' : '<span class="badge bad">مغلقة</span>'}</td>
+              <td>${money(d.totalSales)}</td>
+              <td>${money(d.totalExpenses)}</td>
+              <td><b>${money(d.net)}</b></td>
+              <td><button class="btn btn-sm btn-blue" onclick="viewShift(${s.id})">عرض التقرير</button></td>
+            </tr>`;
+          }).join("") : `<tr><td colspan="9">لا توجد ورديات</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+function viewShift(id){
+  const sh = db.shifts.find(s=>s.id===id);
+  if(!sh) return;
+  const d = shiftData(id);
+  showModal(`
+    <div class="modal-head no-print">
+      <h2>تقرير وردية</h2>
+      <button class="btn btn-soft" onclick="closeModal()">×</button>
+    </div>
+    <div class="printable">
+      ${shiftReportHTML(sh,d,sh.status==="closed")}
+    </div>
+    <div class="row no-print" style="margin-top:12px;">
+      <button class="btn btn-outline" onclick="window.print()">طباعة</button>
+    </div>
+  `);
+}
+function salesTable(sales, showView){
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>التاريخ</th><th>الفاتورة</th><th>الكاشير</th><th>الوردية</th><th>الدفع</th><th>النوع</th><th>الإجمالي</th>${showView?'<th>إجراء</th>':''}</tr></thead>
+        <tbody>
+          ${sales.length ? sales.map(s=>`
+            <tr>
+              <td>${new Date(s.date).toLocaleString("ar-EG")}</td>
+              <td><b>${s.invoice}</b></td>
+              <td>${s.cashierName}</td>
+              <td>${s.shiftId}</td>
+              <td>${s.paymentType}</td>
+              <td>${s.orderType}</td>
+              <td>${money(s.total)}</td>
+              ${showView?`<td><button class="btn btn-sm btn-blue" onclick="viewSale(${s.id})">عرض</button></td>`:""}
+            </tr>
+          `).join("") : `<tr><td colspan="${showView?8:7}">لا توجد فواتير</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+function viewSale(id){
+  const s = db.sales.find(x=>x.id===id);
+  if(!s) return;
+  showModal(`
+    <div class="modal-head no-print"><h2>فاتورة ${s.invoice}</h2><button class="btn btn-soft" onclick="closeModal()">×</button></div>
+    <div class="printable">
+      <div class="receipt-head"><h2>${db.settings.restaurantName}</h2><p>${db.settings.address}</p><p>${db.settings.phone}</p></div>
+      <div class="receipt-info">
+        <div>التاريخ: <b>${new Date(s.date).toLocaleString("ar-EG")}</b></div>
+        <div>الكاشير: <b>${s.cashierName}</b></div>
+        <div>الوردية: <b>${s.shiftId}</b></div>
+        <div>الدفع: <b>${s.paymentType}</b></div>
+      </div>
+      ${(s.items||[]).map(i=>`<div class="cart-line"><div class="line-top"><span>${i.name}</span><span>${money(i.qty*i.price)}</span></div><div class="line-sub">${i.qty} × ${money(i.price)}</div></div>`).join("")}
+      <div class="summary"><div class="sum-row"><span>الإجمالي</span><b>${money(s.subtotal)}</b></div><div class="sum-row"><span>خدمة</span><b>${money(s.service)}</b></div><div class="sum-row"><span>دليفري</span><b>${money(s.delivery)}</b></div><div class="sum-row"><span>خصم</span><b>${money(s.discount)}</b></div><div class="sum-row total"><span>المطلوب</span><b>${money(s.total)}</b></div></div>
+    </div>
+    <button class="btn btn-outline no-print" style="margin-top:12px;" onclick="window.print()">طباعة</button>
+  `);
+}
+function expensesTable(expenses, actions){
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>التاريخ</th><th>الكاشير</th><th>الوردية</th><th>البند</th><th>القسم</th><th>المبلغ</th><th>ملاحظات</th>${actions?'<th>إجراء</th>':''}</tr></thead>
+        <tbody>
+          ${expenses.length ? expenses.map(e=>`
+            <tr>
+              <td>${new Date(e.date).toLocaleString("ar-EG")}</td>
+              <td>${e.cashierName}</td>
+              <td>${e.shiftId}</td>
+              <td><b>${e.title}</b></td>
+              <td>${e.category}</td>
+              <td>${money(e.amount)}</td>
+              <td>${e.note || "-"}</td>
+              ${actions?`<td><button class="btn btn-sm btn-bad" onclick="deleteExpense(${e.id})">حذف</button></td>`:""}
+            </tr>
+          `).join("") : `<tr><td colspan="${actions?8:7}">لا توجد مصروفات</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+function priceHistoryTable(){
+  const h = db.priceHistory.slice().reverse().slice(0,40);
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>التاريخ</th><th>الصنف</th><th>القسم</th><th>قديم</th><th>جديد</th><th>الفرق</th><th>المستخدم</th><th>النوع</th></tr></thead>
+        <tbody>
+          ${h.length ? h.map(x=>`<tr><td>${new Date(x.date).toLocaleString("ar-EG")}</td><td><b>${x.productName}</b></td><td>${x.category}</td><td>${money(x.oldPrice)}</td><td>${money(x.newPrice)}</td><td>${money(x.diff)}</td><td>${x.userName}</td><td>${x.type}</td></tr>`).join("") : `<tr><td colspan="8">لا توجد تغييرات أسعار</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function showModal(html){
+  $("modal").innerHTML = `<div class="modal-card">${html}</div>`;
+  $("modal").classList.remove("hidden");
+}
+function closeModal(){
+  $("modal").classList.add("hidden");
+  $("modal").innerHTML = "";
+}
+window.onclick = (e)=>{if(e.target===$("modal")) closeModal()};
+
+function backupData(){
+  downloadFile(JSON.stringify(db,null,2), `نسخة_احتياطية_الريان_${todayStr()}.json`, "application/json;charset=utf-8");
+}
+function restoreData(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = ()=>{
+    try{
+      const data = JSON.parse(r.result);
+      if(!data.users || !data.products || !data.shifts) throw new Error("bad");
+      db = data;
+      saveDB();
+      toast("تم استرجاع النسخة.");
+      setTimeout(()=>location.reload(),700);
+    }catch(e){toast("ملف النسخة غير صحيح.")}
+  };
+  r.readAsText(file);
+}
+function downloadFile(content, filename, type){
+  const blob = new Blob([content], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+renderLoginChoices();
+if(session) startApp();
+</script>
+</body>
+</html>
